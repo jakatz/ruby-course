@@ -1,4 +1,4 @@
-require 'pry-byebug'
+require 'pry-debugger'
 require "./bar.rb"
 
 
