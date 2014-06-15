@@ -50,7 +50,7 @@ class Bar
     if happy_hour?
       return menu_item.price * happy_discount
     else
-      return menuitem.price
+      return menu_item.price
     end
   end
 

@@ -125,15 +125,21 @@ describe Bar do
     it "applies the happy_discount during happy hour" do
       @bar = Bar.new("FunBar")
       @food = MenuItem.new("food", 20)
-      expect(@bar).to receive(:happy_hour?).and_return(true)
-      expect(@food.price).to eq(10)
+
+      time = Time.parse('3:30pm')
+      Time.stub(:now).and_return(time)
+
+      expect(@bar.get_price(@food)).to eq(10)
     end
 
     it "does not apply any discount during normal hours" do
       @bar = Bar.new("FunBar")
       @food = MenuItem.new("food", 20)
-      expect(@bar).to receive(:happy_hour?).and_return(false)
-      expect(@food.price).to eq(20)
+
+      time = Time.parse('1pm')
+      Time.stub(:now).and_return(time)
+
+      expect(@bar.get_price(@food)).to eq(20)
     end
   end
 end
