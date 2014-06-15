@@ -81,23 +81,59 @@ describe Bar do
   # DO NOT CHANGE SPECS ABOVE THIS LINE #
 # # # # # # # # # # # # # # # # # # # # # #
 
-  describe '#happy_hour?', :pending => true do
+  describe '#happy_hour?' do
     it "knows when it is happy hour (3:00pm to 4:00pm)" do
-      # TODO: CONTROL TIME
+      happy_hour_start = Time.parse('3pm')
+      happy_hour_end = Time.parse('4pm')
+
+      t = Time.parse('3:30pm')
+      Time.stub(:now).and_return(t)
+
       expect(@bar.happy_hour?).to eq(true)
     end
 
     it "is not happy hour otherwise" do
-      # TODO: CONTROL TIME
+      happy_hour_start = Time.parse('3pm')
+      happy_hour_end = Time.parse('4pm')
+
+      t2 = Time.parse('2pm')
+      Time.stub(:now).and_return(t2)
+
       expect(@bar.happy_hour?).to eq(false)
+    end
+
+    context "During normal hours" do
+      it "has no happy discount" do
+        @bar = Bar.new("FunBar")
+        @bar.happy_discount = 0.5
+        expect(@bar).to receive(:happy_hour?).and_return(false)
+        expect(@bar.happy_discount).to eq(0)
+      end
+    end
+
+    context "During happy hours" do
+      it "has a happy discount" do
+        @bar = Bar.new("FunBar")
+        @bar.happy_discount = 0.5
+        expect(@bar).to receive(:happy_hour?).and_return(true)
+        expect(@bar.happy_discount).to eq(0.5)
+      end
     end
   end
 
-  context "During normal hours" do
-    # TODO: WRITE TESTS TO ENSURE BAR KNOWS NOT TO DISCOUNT
-  end
+  describe '#get_price' do
+    it "applies the happy_discount during happy hour" do
+      @bar = Bar.new("FunBar")
+      @food = MenuItem.new("food", 20)
+      expect(@bar).to receive(:happy_hour?).and_return(true)
+      expect(@food.price).to eq(10)
+    end
 
-  context "During happy hours" do
-    # TODO: WRITE TESTS TO ENSURE BAR DISCOUNTS DURING HAPPY HOUR
+    it "does not apply any discount during normal hours" do
+      @bar = Bar.new("FunBar")
+      @food = MenuItem.new("food", 20)
+      expect(@bar).to receive(:happy_hour?).and_return(false)
+      expect(@food.price).to eq(20)
+    end
   end
 end

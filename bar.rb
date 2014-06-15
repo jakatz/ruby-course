@@ -33,6 +33,25 @@ class Bar
   end
 
   def happy_hour?
+    happy_hour_start = Time.parse('3pm')
+    happy_hour_end = Time.parse('4pm')
+
+    happy_hour = Time.now
+    if happy_hour > happy_hour_start && happy_hour < happy_hour_end
+      @happy_discount = 0.5
+      return true
+    else
+      @happy_discount = 0
+      return false
+    end
+  end
+
+  def get_price(menu_item)
+    if happy_hour?
+      return menu_item.price * happy_discount
+    else
+      return menuitem.price
+    end
   end
 
 end
